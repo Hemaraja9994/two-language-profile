@@ -1,0 +1,11 @@
+{
+  "name": "Two-Language Profile",
+  "short_name": "2-Lang Profile",
+  "description": "Case-history helper to tell a language difference from a language disorder in bilingual children.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F9FB",
+  "theme_color": "#17212E",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

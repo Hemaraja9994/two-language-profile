@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two-Language Profile</title>
+<meta name="description" content="A case-history helper for speech-language pathologists assessing children who use more than one language.">
+<meta name="theme-color" content="#17212E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+.lgrid{display:grid;grid-template-columns:1.3fr .8fr .8fr .8fr;gap:8px;align-items:end}
+.lgrid .h{font-size:.8rem;color:var(--muted);font-weight:700}
+.lgrid input,.lgrid select{margin-top:0}
+.bars{display:grid;gap:8px;margin-top:10px}
+.bar{display:grid;grid-template-columns:8rem 1fr 3.5rem;gap:10px;align-items:center;font-size:.92rem}
+.bar .tr{height:14px;background:var(--track);border-radius:7px;overflow:hidden}
+.bar .tr i{display:block;height:100%;background:var(--accent)}
+.q{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q .seg button{padding:5px 11px;font-size:.84rem}
+.pattern{font-size:1.15rem;font-weight:700;margin:6px 0}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand"><img src="icon.svg" width="34" height="34" alt=""><h1><span data-i18n="appName"></span><small data-i18n="appSub"></small></h1></div>
+  <div class="top-tools"><span class="net" id="net" role="status" aria-live="polite"></span><label class="sr" for="lang">Language</label><select id="lang" class="lang"></select></div>
+</div></header>
+
+<main class="wrap">
+  <section class="intro">
+    <h2>Difference or disorder? Start with the child's whole language life</h2>
+    <p>A child who speaks Telugu at home and is learning Kannada and English at school will look delayed on any single-language test. This profile records how much of each language the child hears and the signs that point to a true language disorder, which shows up in every language the child uses.</p>
+  </section>
+
+  <div class="grid2">
+    <section class="panel" aria-labelledby="c1">
+      <h3 id="c1">Child and languages</h3>
+      <div class="row2">
+        <label class="field" for="code">Child code<input type="text" id="code" maxlength="30" autocomplete="off"></label>
+        <label class="field" for="age">Age (years)<input type="number" id="age" min="1" max="18" step="0.5"></label>
+      </div>
+      <p class="lead small-text muted" style="margin-top:14px">For each language, estimate the hours in a typical waking week the child hears it (from family, school, carers and media) and when the child first heard it.</p>
+      <div class="lgrid" id="langs"></div>
+      <div class="actions"><button type="button" class="small" id="addLang">Add a language</button></div>
+      <div id="expo"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="c2">
+      <h3 id="c2">Signs to ask about</h3>
+      <p class="lead">Ask the family about the child's <b>strongest or home language</b>, not the school language.</p>
+      <div id="qs"></div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="c3" id="resultPanel">
+    <div class="head-row"><h3 id="c3">What the profile suggests</h3>
+      <div class="actions" style="margin-top:0"><button type="button" class="primary" id="save">Save profile</button><button type="button" id="print">Print summary</button></div></div>
+    <div id="result" aria-live="polite"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="c4" style="margin-top:20px">
+    <div class="head-row"><h3 id="c4">Saved profiles</h3><div class="actions" style="margin-top:0"><button type="button" class="small" id="csv">Download CSV</button></div></div>
+    <div class="table-scroll" id="saved"></div>
+  </section>
+
+  <section id="printArea" aria-hidden="true"></section>
+</main>
+
+<footer><div class="wrap">
+  <p data-i18n="disclaimer"></p>
+  <p class="small-text">Background: Paradis J, Emmerzael K, Sorenson Duncan T. Assessment of English language learners: using parent report on first language development. J Commun Disord 2010;43(6):474–497. Bedore LM, Peña ED. Assessment of bilingual children for identification of language impairment: current findings and implications for practice. Int J Biling Educ Biling 2008;11(1):1–29. Pearson BZ et al. The relation of input factors to lexical learning by bilingual infants. Appl Psycholinguist 1997;18(1):41–58.</p>
+  <p>Data stays in this browser only.</p>
+  <p id="credit"></p>
+</div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="kit.js"></script>
+<script>
+const I18N_APP = { en:{ appName:"Two-Language Profile", appSub:"Language difference or language disorder?",
+  disclaimer:"A structured case history, not a diagnostic test. Diagnosis needs assessment in each of the child's languages by a speech-language pathologist." } };
+const KEY = "tlp-profiles";
+const LANG_OPTS = ["Kannada","Telugu","Hindi","Tamil","Malayalam","Tulu","Konkani","Marathi","Urdu","Bengali","English","Other"];
+const QS = [
+  {id:"late", w:2, q:"First words came after 18 months, or word combinations after 24 months, in the home language"},
+  {id:"homeWeak", w:2, q:"Family says the child speaks the home language less well than siblings or children of the same age"},
+  {id:"allLangs", w:2, q:"Difficulties are noticed in every language the child uses, not only the newest one"},
+  {id:"family", w:1, q:"A parent or sibling had a speech, language or reading difficulty"},
+  {id:"understand", w:1, q:"Child has trouble understanding instructions in the home language"},
+  {id:"frustration", w:1, q:"Child gets frustrated or withdrawn because others do not understand them"}
+];
+let langs = [{name:"Kannada", hrs:"", age:"0"},{name:"English", hrs:"", age:"3"}];
+let answers = {};
+let profiles = store.get(KEY, []);
+
+function renderLangs(){
+  $("#langs").innerHTML = `<div class="h">Language</div><div class="h">Hours / week</div><div class="h">First heard at age</div><div></div>` +
+    langs.map((l,i) => `<select data-li="${i}" data-k="name" aria-label="Language ${i+1}">${LANG_OPTS.map(o=>`<option ${o===l.name?"selected":""}>${o}</option>`).join("")}</select>
+      <input type="number" min="0" max="112" data-li="${i}" data-k="hrs" value="${esc(l.hrs)}" aria-label="Hours per week in ${esc(l.name)}">
+      <input type="number" min="0" max="18" step="0.5" data-li="${i}" data-k="age" value="${esc(l.age)}" aria-label="Age first heard ${esc(l.name)}">
+      <button type="button" class="small" data-rm="${i}" ${langs.length<=1?"disabled":""}>Remove</button>`).join("");
+}
+function exposure(){
+  const tot = langs.reduce((s,l) => s + (Number(l.hrs) || 0), 0);
+  return langs.map(l => ({...l, pct: tot ? Math.round((Number(l.hrs)||0) / tot * 100) : 0})).filter(() => tot > 0);
+}
+function renderExpo(){
+  const ex = exposure();
+  $("#expo").innerHTML = ex.length ? `<div class="bars">${ex.map(l => `<div class="bar"><span>${esc(l.name)}</span><span class="tr"><i style="width:${l.pct}%"></i></span><b class="num">${l.pct}%</b></div>`).join("")}</div>
+    ${ex.some(l => l.pct > 0 && l.pct < 20) ? `<div class="callout mid small-text">Less than about 20% of a child's input in a language is often not enough for them to speak it actively yet. Expect understanding before speaking in ${esc(ex.filter(l=>l.pct>0&&l.pct<20).map(l=>l.name).join(", "))}.</div>` : ""}` : "";
+}
+function renderQs(){
+  $("#qs").innerHTML = QS.map(q => `<div class="q"><span>${esc(q.q)}</span><span class="seg" role="group" aria-label="${esc(q.q)}">${["yes","no","unsure"].map(v => `<button type="button" data-q="${q.id}" data-v="${v}" aria-pressed="${answers[q.id]===v}">${v[0].toUpperCase()+v.slice(1)}</button>`).join("")}</span></div>`).join("");
+}
+function assess(){
+  const answered = QS.filter(q => answers[q.id]).length;
+  const score = QS.reduce((s,q) => s + (answers[q.id] === "yes" ? q.w : 0), 0);
+  const max = QS.reduce((s,q) => s + q.w, 0);
+  const core = ["late","homeWeak","allLangs"].filter(k => answers[k] === "yes").length;
+  let level, text, c;
+  if (answered < 3){ level = "incomplete"; text = "Answer the questions to see the pattern."; c = "muted"; }
+  else if (core >= 2 || score >= 5){ level = "high"; text = "Signs point towards a possible language disorder"; c = "high"; }
+  else if (core === 1 || score >= 3){ level = "mid"; text = "Mixed picture: some signs of concern"; c = "mid"; }
+  else { level = "low"; text = "Pattern fits a typical second-language learner"; c = "ok"; }
+  return {answered, score, max, core, level, text, c};
+}
+function renderResult(){
+  const a = assess(), ex = exposure();
+  const recs = [
+    "Assess in the home language as well as the school language, with an interpreter or bilingual clinician if needed.",
+    "Score vocabulary across languages (conceptual or total vocabulary), not one language alone.",
+    "Interpret norms from single-language or English-speaking samples with great caution.",
+    "Use dynamic assessment (test, teach, retest) to see how quickly the child learns new words or rules.",
+    "Advise the family to keep using the home language. Dropping it does not speed up learning the school language."
+  ];
+  if (a.level === "high") recs.unshift("Proceed to a full speech-language assessment in all languages, and check hearing.");
+  if (a.level === "low") recs.unshift("Monitor progress in the school language over the next term; review sooner if concerns grow.");
+  $("#result").innerHTML = `<p class="pattern"><span class="pill ${a.c}" style="font-size:.9rem;vertical-align:middle">${a.level==="incomplete"?"Incomplete":a.level==="high"?"Concern":a.level==="mid"?"Watch":"Difference"}</span> ${esc(a.text)}</p>
+    <p class="muted small-text">Weighted signs: ${a.score} of ${a.max} (${a.answered} of ${QS.length} questions answered). Core signs (late milestones, weak home language, difficulty in every language): ${a.core} of 3.</p>
+    <div class="callout"><h4>Next steps</h4><ul>${recs.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div>`;
+}
+function renderSaved(){
+  $("#saved").innerHTML = profiles.length ? `<table class="rec"><thead><tr><th>Date</th><th>Child</th><th>Age</th><th>Languages</th><th>Pattern</th><th></th></tr></thead><tbody>${profiles.slice().reverse().map(p => `<tr><td>${esc(fmtDate(p.date))}</td><td>${esc(p.code)}</td><td>${esc(p.age||"")}</td><td>${esc(p.langs.map(l=>`${l.name} ${l.pct}%`).join(", "))}</td><td><span class="pill ${p.result.c}">${esc(p.result.text)}</span></td><td><button type="button" class="small" data-open="${p.id}">Open</button> <button type="button" class="small danger" data-del="${p.id}">Delete</button></td></tr>`).join("")}</tbody></table>` : `<p class="muted" style="margin:0">No saved profiles yet.</p>`;
+}
+function render(){ renderLangs(); renderExpo(); renderQs(); renderResult(); renderSaved(); }
+
+$("#langs").addEventListener("input", e => { const i = e.target.dataset.li; if (i == null) return; langs[i][e.target.dataset.k] = e.target.value; renderExpo(); });
+$("#langs").addEventListener("change", e => { const i = e.target.dataset.li; if (i == null) return; langs[i][e.target.dataset.k] = e.target.value; renderExpo(); });
+$("#langs").addEventListener("click", e => { if (e.target.dataset.rm == null) return; langs.splice(Number(e.target.dataset.rm), 1); renderLangs(); renderExpo(); });
+$("#addLang").addEventListener("click", () => { if (langs.length >= 5) return; langs.push({name:"Hindi", hrs:"", age:""}); renderLangs(); });
+$("#qs").addEventListener("click", e => { const b = e.target.closest("[data-q]"); if (!b) return; answers[b.dataset.q] = answers[b.dataset.q] === b.dataset.v ? undefined : b.dataset.v; renderQs(); renderResult(); });
+$("#save").addEventListener("click", () => {
+  const code = $("#code").value.trim(); if (!code){ toast("Enter a child code first."); $("#code").focus(); return; }
+  profiles.push({id: uid(), date: todayISO(), code, age: $("#age").value, langs: exposure().length ? exposure() : langs.map(l=>({...l,pct:0})), answers: {...answers}, result: assess()});
+  store.set(KEY, profiles); renderSaved(); toast("Profile saved");
+});
+$("#saved").addEventListener("click", e => {
+  if (e.target.dataset.del){ profiles = profiles.filter(p => p.id !== e.target.dataset.del); store.set(KEY, profiles); renderSaved(); toast("Deleted"); }
+  if (e.target.dataset.open){ const p = profiles.find(x => x.id === e.target.dataset.open); $("#code").value = p.code; $("#age").value = p.age || ""; langs = p.langs.map(l=>({name:l.name, hrs:l.hrs, age:l.age})); answers = {...p.answers}; render(); window.scrollTo({top:0, behavior:"smooth"}); }
+});
+$("#print").addEventListener("click", () => {
+  const a = assess(), ex = exposure();
+  printArea(`<h2>Two-language case history</h2><p>Child: <b>${esc($("#code").value)}</b>. Age: ${esc($("#age").value)} years. Date: ${esc(fmtDate(new Date()))}.</p>
+    <h3>Language exposure</h3><table><tr><th>Language</th><th>Hours a week</th><th>Share</th><th>First heard at age</th></tr>${(ex.length?ex:langs).map(l=>`<tr><td>${esc(l.name)}</td><td>${esc(l.hrs)}</td><td>${l.pct ?? ""}%</td><td>${esc(l.age)}</td></tr>`).join("")}</table>
+    <h3>Signs</h3><table>${QS.map(q=>`<tr><td>${esc(q.q)}</td><td>${esc(answers[q.id]||"not asked")}</td></tr>`).join("")}</table>
+    <h3>Pattern</h3><p><b>${esc(a.text)}</b> (weighted signs ${a.score} of ${a.max}; core signs ${a.core} of 3).</p>
+    <p>This is a structured case history, not a diagnosis.</p><div class="sig"><div>Speech-language pathologist (name, RCI number)</div><div>Date</div></div>`);
+});
+$("#csv").addEventListener("click", () => downloadCSV([["date","child_code","age","languages","pattern","weighted_score","core_signs",...QS.map(q=>q.id)],
+  ...profiles.map(p => [p.date, p.code, p.age, p.langs.map(l=>`${l.name} ${l.pct}% (from age ${l.age})`).join("; "), p.result.text, p.result.score, p.result.core, ...QS.map(q=>p.answers[q.id]||"")])], `two-language-profiles-${todayISO()}.csv`));
+
+KIT.start({ i18n: I18N_APP, render, version: "0.1.0 (draft for clinical review)" });
+</script>
+</body>
+</html>
