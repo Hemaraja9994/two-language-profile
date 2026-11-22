@@ -1,0 +1,17 @@
+[
+  { "id": "difference-disorder", "title": "Difference is not disorder", "tags": ["bilingual", "difference", "disorder", "second language", "typical", "myth"],
+    "text": "Learning a second language, mixing languages, a silent period in a new language, and losing some of an unused language are all typical of bilingual development, not signs of disorder. A true language disorder shows up in all of a child's languages, including the strongest one.",
+    "source": "Paradis J, Genesee F, Crago M. Dual language development and disorders. 2nd ed.", "year": 2011, "checked": "Nov 2026" },
+  { "id": "all-languages", "title": "A disorder affects every language", "tags": ["all languages", "home language", "core sign", "assessment", "both"],
+    "text": "The key marker of language disorder in a bilingual child is difficulty in the first/home language relative to similar bilingual peers, not just weaker skills in the newly learned language. Assess the home language too; weakness only in the school language usually reflects limited exposure.",
+    "source": "Kohnert K. Language disorders in bilingual children and adults. 2nd ed.", "year": 2013, "checked": "Nov 2026" },
+  { "id": "keep-home", "title": "Keep the home language", "tags": ["home language", "advice", "drop", "input", "family", "bilingual", "myth"],
+    "text": "Telling families to drop the home language and use only the school language is not supported by evidence and reduces the child's total language input and family connection. Children with language disorder can and should remain bilingual; raising a child bilingually does not cause disorder.",
+    "source": "American Speech-Language-Hearing Association. Bilingual service delivery", "year": 2023, "url": "https://www.asha.org/practice-portal/professional-issues/bilingual-service-delivery/", "checked": "Nov 2026" },
+  { "id": "conceptual", "title": "Conceptual and total vocabulary", "tags": ["vocabulary", "conceptual", "total", "scoring", "norms", "bias"],
+    "text": "Count what a bilingual child knows across all languages — conceptual vocabulary (concepts known in any language) and total vocabulary — rather than scoring one language against monolingual norms, which underestimates ability and over-identifies disorder.",
+    "source": "Pearson BZ, et al. Lexical development in bilingual infants and toddlers. Lang Learn", "year": 1993, "checked": "Nov 2026" },
+  { "id": "dynamic", "title": "Dynamic assessment", "tags": ["dynamic assessment", "test teach retest", "learning", "modifiability", "fair", "bilingual"],
+    "text": "Dynamic assessment — test, teach a skill briefly, then retest — measures how readily a child learns, which is less biased by language background than static tests. A child who learns quickly with support is more likely a typical learner than one who is disordered.",
+    "source": "Peña ED, et al. Dynamic assessment of language. J Speech Lang Hear Res", "year": 2014, "url": "https://pubmed.ncbi.nlm.nih.gov/25089929/", "checked": "Nov 2026" }
+]
