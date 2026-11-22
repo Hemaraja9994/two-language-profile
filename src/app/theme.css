@@ -1,0 +1,38 @@
+.theme-src{}
+/* ===== two-language-profile theme ===== */
+:root{
+  --color-paper: #F5F5FA;
+  --color-surface: #FFFFFF;
+  --color-ink: #26224E;
+  --color-muted: #535074;
+  --color-line: #D7D6E6;
+  --color-track: #E6E5F2;
+  --color-accent: #4B3FB0;
+  --color-grid: #E6E5F2;
+  --font-sans: "Source Sans 3","Atkinson Hyperlegible",system-ui,sans-serif;
+  --font-display: "Lora","Atkinson Hyperlegible",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+  --color-paper: #0E0C20;
+  --color-surface: #171530;
+  --color-ink: #E9E8F4;
+  --color-accent: #9188EA;
+  --color-grid: #1C1A38;
+  --color-muted: #A3B1C2;
+  --color-line: #2B3A4B;
+  --color-track: #22303F;
+  }
+}
+body{
+  background-image:
+    linear-gradient(var(--color-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+h1,h2,h3,h4{ font-family: var(--font-display); }
+header.bg-ink{
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 2px, transparent 2px 15px);
+  background-size: auto;
+}
+
